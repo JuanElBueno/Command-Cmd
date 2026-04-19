@@ -35,6 +35,63 @@ set titulo1=Juan El Bueno
 set modo=on
 set wifi=
 
+REM ===== URLs CENTRALIZADAS =====
+set url_7zip=https://www.7-zip.org/a/7z2408-x64.exe
+set url_procexp=https://download.sysinternals.com/files/ProcessExplorer.zip
+set url_speedtest=https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-win64.zip
+set url_autoruns=https://download.sysinternals.com/files/Autoruns.zip
+set url_tmx=https://mitec.cz/Downloads/TMX.zip
+set url_everything=https://www.voidtools.com/Everything-1.4.1.969.x64.zip
+set url_wiztree=https://diskanalyzer.com/files/wiztree_4_08_portable.zip
+set url_uget=https://github.com/JuanElBueno/getu/raw/main/getu.7z
+set url_msert=https://definitionupdates.microsoft.com/download/DefinitionUpdates/VersionedSignatures/AM/1.381.1451.0/amd64/MSERT.exe
+set url_wget_32=https://eternallybored.org/misc/wget/1.21.3/32/wget.exe
+set url_wget_64=https://eternallybored.org/misc/wget/1.21.3/64/wget.exe
+set url_powerrun=https://github.com/JuanElBueno/Command-Cmd/raw/main/PowerRun_x64.exe
+
+REM ===== FUNCIONES REUTILIZABLES =====
+REM Función InstallProgram PROGRAM_NAME PROGRAM_PATH URL_ZIP ZIP_FILENAME EXTRACT_PATH RETURN_LABEL
+REM Ejemplo: call :InstallProgram "procexp64" "%programas%" "https://example.com/prog.zip" "prog.zip" "%programas%" "menu64"
+:InstallProgram
+setlocal
+set "PROG_NAME=%1"
+set "PROG_PATH=%2\%PROG_NAME%.exe"
+set "URL=%3"
+set "ZIP_NAME=%4"
+set "EXTRACT_PATH=%5"
+set "RETURN_LABEL=%6"
+
+IF EXIST "%PROG_PATH%" (
+	echo %cverde%[+] %PROG_NAME% ya instalado%fblanco%
+	timeout /T 2 >nul
+	endlocal & goto %RETURN_LABEL%
+) else if "%wifi%"=="true" (
+	echo %camarillo%[*] Descargando %PROG_NAME%...%fblanco%
+	cd %rar%
+	powershell -command iwr '%URL%' -OutFile '%ZIP_NAME%' >nul 2>&1
+	if !ERRORLEVEL! neq 0 (
+		echo %crojo%[!] Error descargando %PROG_NAME%%fblanco%
+		timeout /T 3 >nul
+		endlocal & goto %RETURN_LABEL%
+	)
+	echo %camarillo%[*] Extrayendo %PROG_NAME%...%fblanco%
+	%zip% x %rar%\%ZIP_NAME% -o%EXTRACT_PATH% -y >nul 2>&1
+	timeout /T 2 >nul
+	cd %EXTRACT_PATH%
+	if exist "%PROG_PATH%" (
+		start %PROG_NAME%.exe
+		echo %cverde%[+] %PROG_NAME% iniciado%fblanco%
+	) else (
+		echo %crojo%[!] Error: %PROG_NAME%.exe no encontrado%fblanco%
+	)
+	timeout /T 2 >nul
+	endlocal & goto %RETURN_LABEL%
+) else (
+	echo %camarillo%[!] Sin conexión. No se puede descargar %PROG_NAME%%fblanco%
+	timeout /T 3 >nul
+	endlocal & goto %RETURN_LABEL%
+)
+
 echo Comprobando conectividad ...
 ping -n 1 juanelbueno.github.io
 
@@ -50,6 +107,12 @@ goto sinconexioni
 set Versiontwo=%Version%
 if exist "%ruta%\Updater.bat" DEL /S /Q /F "%ruta%\Updater.bat" >nul 2>&1
 "%SystemRoot%\System32\curl.exe" -g -L -# -o "%ruta%\Updater.bat" "https://raw.githubusercontent.com/JuanElBueno/Command-Cmd/main/Update" >nul 2>&1
+if %ERRORLEVEL% neq 0 (
+	echo %camarillo%[!] Advertencia: Descarga de actualización falló. Continuando sin actualizar.%fblanco%
+	timeout /T 3 >nul
+	goto titulot
+)
+if not exist "%ruta%\Updater.bat" goto titulot
 call "%ruta%\Updater.bat"
 if "%Version%" gtr "%Versiontwo%" (
 	cls
@@ -70,7 +133,18 @@ if "%Version%" gtr "%Versiontwo%" (
 	"%SystemRoot%\System32\choice.exe" /c:YN /n /m "%DEL%                                >:"
 	set "choice=!errorlevel!"
 	if !choice! == 1 (
+		echo %camarillo%[*] Descargando actualización...%fblanco%
 		"%SystemRoot%\System32\curl.exe" -L -o %USERPROFILE%\Desktop\Comandos.bat "https://raw.githubusercontent.com/JuanElBueno/Command-Cmd/main/Comandos.bat" >nul 2>&1
+		if %ERRORLEVEL% neq 0 (
+			echo %crojo%[!] Error: No se pudo descargar la actualización. Intenta de nuevo más tarde.%fblanco%
+			timeout /T 3 >nul
+			goto menu
+		)
+		if not exist %USERPROFILE%\Desktop\Comandos.bat (
+			echo %crojo%[!] Error: Archivo descargado no encontrado.%fblanco%
+			timeout /T 3 >nul
+			goto menu
+		)
 		call %USERPROFILE%\Desktop\Comandos.bat
 		exit /b
 	)
@@ -100,19 +174,18 @@ echo                  Para Win 10 Y 11
 echo.
 echo        Version %Beta% De la Aplicacion %Version%  
 echo.
-echo ==================================================
-timeout /T 5 >nul
+echo ================================================== timeout /T 3 >nul
 
 REM Programas necesarios para iniciar
 
 IF EXIST %zip% (
-echo %cverde%[+]Progama Istalado Exitosa 7zip & timeout /T 5 >nul
+echo %cverde%[+]Progama Istalado Exitosa 7zip & timeout /T 2 >nul
 goto admin
 ) else if "%wifi%"=="true" (
-echo %crojo%[+]Programas Necesarios 7zip & timeout /T 5 >nul
+echo %crojo%[+]Programas Necesarios 7zip & timeout /T 2 >nul
 goto desrar
 ) else (
-echo %camarillo%[+]Estas sin conexion de internet & timeout /T 5 >nul
+echo %camarillo%[+]Estas sin conexion de internet & timeout /T 2 >nul
 goto admin
 )
 
@@ -121,7 +194,7 @@ if exist %zip% (
 goto admin
 ) else if "%wifi%"=="true" (
 cd %programas%
-powershell -command iwr 'https://www.7-zip.org/a/7z2408-x64.exe' -OutFile 'zip.exe'
+powershell -command iwr '%url_7zip%' -OutFile 'zip.exe'
 zip.exe /S /D="C:\Program Files\7-Zip"
 goto admin
 )
@@ -137,13 +210,13 @@ REM )
 
 :admin
 IF EXIST %admin%\PowerRun_x64.exe (
-echo %cverde%[+]Progama Istalado Exitosa PowerRun & timeout /T 5 >nul
+echo %cverde%[+]Progama Istalado Exitosa PowerRun & timeout /T 2 >nul
 goto wget1
 ) else if "%wifi%"=="true" (
-echo %crojo%[+]Programas Necesarios PowerRun & timeout /T 5 >nul
+echo %crojo%[+]Programas Necesarios PowerRun & timeout /T 2 >nul
 goto admindes
 ) else (
-echo %camarillo%[+]Estas sin conexion de internet & timeout /T 5 >nul
+echo %camarillo%[+]Estas sin conexion de internet & timeout /T 2 >nul
 goto wget1
 )
 
@@ -154,7 +227,7 @@ goto wget1
 ) else (
 :: si no exite se descarga
 cd %admin%
-powershell -command iwr 'https://github.com/JuanElBueno/Command-Cmd/raw/main/PowerRun_x64.exe' -OutFile 'PowerRun_x64.exe' 
+powershell -command iwr '%url_powerrun%' -OutFile 'PowerRun_x64.exe' 
 goto wget1
 )
 
@@ -168,26 +241,26 @@ set wgetvof=n
 )
 
 if "%wgetvof%"=="y" (
-IF EXIST C:\Windows\System32\wget.exe ( 
-echo %cverde%[+]Progama Istalado Exitosa Wget [administracion] & timeout /T 5 >nul 
+IF EXIST C:\Windows\System32\wget.exe (
+echo %cverde%[+]Progama Istalado Exitosa Wget [administracion] & timeout /T 2 >nul
 goto menu
 ) else if "%wifi%"=="true" (
-echo %crojo%[+]Programas Necesarios Wget [administracion] & timeout /T 5 >nul
+echo %crojo%[+]Programas Necesarios Wget [administracion] & timeout /T 2 >nul
 goto wgetinstalar
 ) else (
-echo %camarillo%[+]Estas sin conexion de internet & timeout /T 5 >nul
+echo %camarillo%[+]Estas sin conexion de internet & timeout /T 2 >nul
 goto menu
 ))
  
 if "%wgetvof%"=="n" (
-IF EXIST %Ruta%\wget.exe ( 
-echo %cverde%[+]Progama Istalado Exitosa Wget [No administracion] & timeout /T 5 >nul 
+IF EXIST %Ruta%\wget.exe (
+echo %cverde%[+]Progama Istalado Exitosa Wget [No administracion] & timeout /T 2 >nul
 goto menu
 ) else if "%wifi%"=="true" (
-echo %crojo%[+]Programas Necesarios Wget [No administracion] & timeout /T 5 >nul
+echo %crojo%[+]Programas Necesarios Wget [No administracion] & timeout /T 2 >nul
 goto wgetsinad
 ) else (
-echo [+]Estas sin conexion de internet & timeout /T 5 >nul
+echo [+]Estas sin conexion de internet & timeout /T 2 >nul
 goto menu
 ))
 
@@ -200,15 +273,15 @@ timeout /T 5 >nul
 goto menu
 ) else if "%PROCESSOR_ARCHITECTURE%"=="x86" (
 cd %ruta%
-powershell -command iwr 'https://eternallybored.org/misc/wget/1.21.3/32/wget.exe' -OutFile 'wget.exe'
+powershell -command iwr '%url_wget_32%' -OutFile 'wget.exe'
 echo.
-timeout /T 6 >nul
+timeout /T 3 >nul
 goto menu
 ) else (
 cd %ruta%
-powershell -command iwr 'https://eternallybored.org/misc/wget/1.21.3/64/wget.exe' -OutFile 'wget.exe' 
+powershell -command iwr '%url_wget_64%' -OutFile 'wget.exe' 
 echo. 
-timeout /T 6 >nul 
+timeout /T 3 >nul 
 goto menu
 )
 
@@ -222,7 +295,7 @@ cd %ruta%
 powershell -command iwr 'https://raw.githubusercontent.com/JuanElBueno/Command-Cmd/main/WgetCmd.bat' -OutFile 'WgetCmd.bat'
 call WgetCmd.bat
 mode con: cols=50 lines=18 
-timeout /T 17 >nul
+timeout /T 7 >nul
 goto menu
 )
 
@@ -261,7 +334,7 @@ echo %fblanco%
 		REM if "%var%"=="d" goto Istalador_de_paquetes
 		) else (
 		echo [+] No disponible modo Administracion de que a hecho la aplicacion %Titulo1%...
-		timeout /T 6 >nul
+		timeout /T 3 >nul
 		goto menu 
 		)
 		
@@ -273,9 +346,10 @@ echo.
 echo %camarillo%=        OPCION SELECCIONADA NO VALIDA!          =
 echo.
 echo %camarillo%==================================================
-timeout /T 5 >nul
+timeout /T 3 >nul
 %fblanco%
 goto menu
+
 
 :informaciondelequipo
 cls
@@ -305,7 +379,7 @@ mode con: cols=65 lines=15
 del *.* /f /S /q >> %Ruta%\achivos_borrados.txt
 rmdir /s /q "%UserProfile%\AppData\Local\Temp" >> %Ruta%\achivos_borrados.txt
 @echo off
-timeout /T 10
+timeout /T 5
 mode con: cols=50 lines=18
 cls
 goto menu
@@ -332,7 +406,7 @@ goto menu
 :: No responde los porgramas
 :noresponde
 cls
-taskkill.exe /f /fi "status eq Not Responding" & timeout /T 10 & goto menu
+taskkill.exe /f /fi "status eq Not Responding" & timeout /T 5 & goto menu
 
 :: No Responde Explore 
 :norespondeexplore
@@ -381,17 +455,18 @@ REM )
 		if "%var%"=="10" call compmgmt & goto admintareas
 		if "%var%"=="s" goto menu
 		
-		
-:error
-cls
-echo %camarillo%==================================================
-echo.
-echo %camarillo%=        OPCION SELECCIONADA NO VALIDA!          =
-echo.
-echo %camarillo%==================================================
-timeout /T 5 >nul
-%fblanco%
-goto admintareas
+
+	:: Error de comandos
+	:errorAdmintareas
+	cls
+	echo %camarillo%==================================================
+	echo.
+	echo %camarillo%=        OPCION SELECCIONADA NO VALIDA!          =
+	echo.
+	echo %camarillo%==================================================
+	timeout /T 5 >nul
+	%fblanco%
+	goto admintareas
 
 REM :descagar_archivos
 REM cd C:\Juanelbuenocopiadelosarcivos\programas
@@ -481,7 +556,7 @@ REM goto Combertidor_de_yt
 :: menu2 de programas de descagar
 :menu2
 if "%PROCESSOR_ARCHITECTURE%"=="x86" (
-  echo Programa no compatible de 32 bits & timeout /T 10 >nul & goto menu
+  echo Programa no compatible de 32 bits & timeout /T 5 >nul & goto menu
 ) else (
   goto 64
 )
@@ -658,7 +733,7 @@ goto 64
 
 
 :programas3
-cd %porgramas%
+cd %programas%
 IF EXIST %programas%\Autoruns64.exe (
 start Autoruns64.exe 
 goto 64
@@ -822,17 +897,33 @@ REM pause
 REM goto menu3
 
 :Executar3
-set /p Spotifyon=Quieres con Plugins o sin Plugin y/n=
+cls
+echo %camarillo%==================================================
+echo %crojo%[!] ADVERTENCIA DE SEGURIDAD
+echo %camarillo%==================================================
+echo %fblanco%
+echo Este programa descargara y ejecutara scripts de internet.
+echo Asegúrate de confiar en las fuentes antes de continuar.
+echo.
+echo %crojo%Riesgo: Ejecución de código remoto (RCE)%fblanco%
+echo.
+echo %camarillo%==================================================
+echo.
+pause
+echo.
+set /p Spotifyon=Deseas continuar? Quieres con Plugins o sin Plugin y/n=
 
-if "%Spotifyon%"=="y" ( 
+if "%Spotifyon%"=="y" (
+echo %camarillo%[*] Descargando e instalando con plugins...%fblanco%
 powershell -Command "& {[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12}"; "& {(Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/spicetify/marketplace/main/resources/install.ps1').Content | Invoke-Expression}"
 echo %cverde%[+] Listo Spotify Full Sin Anuncios%fblanco% & timeout /T 3 >nul
 )
- 
-if "%Spotifyon%"=="n" ( 
+
+if "%Spotifyon%"=="n" (
+echo %camarillo%[*] Descargando e instalando sin plugins...%fblanco%
 powershell -Command "& {[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12}"; "& {(Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/SpotX-Official/SpotX/main/run.ps1').Content | Invoke-Expression}"
 echo %cverde%[+] Listo Spotify Full Sin Anuncios%fblanco% & timeout /T 3 >nul
-goto menu 3
+goto menu3
 )
 
 goto menu3
