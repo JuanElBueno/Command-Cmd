@@ -200,9 +200,10 @@ echo ==================================================
 echo.
 echo                  Para Win 10 Y 11 
 echo.
-echo        Version %Beta% De la Aplicacion %Version%  
+echo        Version %Beta% De la Aplicacion %Version%
 echo.
-echo ================================================== timeout /T 3 >nul
+echo ==================================================
+timeout /T 3 >nul
 
 REM Programas necesarios para iniciar
 
@@ -334,9 +335,9 @@ echo %fblanco%
 	echo ==================================================
 	echo =                       MENU                     =
 	echo ==================================================
-	echo * 1) Eliminar achivos malos                      *
+	echo * 1) Limpiar archivos temporales                 *
 	echo * 2) Ip                                          *
-	echo * 3) Programas que no responde                   *
+	echo * 3) Finalizar programas congelados              *
 	echo * 4) Informacion del equipo                      *
 	echo * 5) Comandos para ejecutar rapidamente          *
 	echo * 6) Informacion del wifi                        *
@@ -353,18 +354,23 @@ echo %fblanco%
 		if "%var%"=="6" goto informaciondelwifi
 		if "%var%"=="7" goto norespondeexplore
 		if "%var%"=="8" goto Administradorcmd
-		if "%var%"=="9" echo [+] Salendo..." & timeout /T 2 >nul & Exit 
+		if "%var%"=="9" echo [+] Saliendo... & timeout /T 2 >nul & Exit
 		REM modo de ingeneria
 		if "%modo%"=="on" (
 		if "%var%"=="o" goto menu2
 		if "%var%"=="r" goto general
-		REM if "%var%"=="y" goto Combertidor_de_yt
-		REM if "%var%"=="d" goto Istalador_de_paquetes
-		) else (
-		echo [+] No disponible modo Administracion de que a hecho la aplicacion %Titulo1%...
-		timeout /T 3 >nul
-		goto menu 
 		)
+
+		REM Si llegó aquí, opción es inválida
+		cls
+		echo %camarillo%==================================================
+		echo.
+		echo %camarillo%=        OPCION SELECCIONADA NO VALIDA!          =
+		echo.
+		echo %camarillo%==================================================
+		timeout /T 3 >nul
+		%fblanco%
+		goto menu
 		
 :: Error de comandos
 :error
@@ -465,12 +471,10 @@ REM )
 	echo = 5) Atualizar el windows                       =
 	echo = 6) Explorer                                   =
 	echo = 7) Recorte de pantalla                        =
-	echo = 8) Descargar_Achivos_powershell               =
-	echo = 9) Descargar_Achivos                          =
 	echo = 10) Administracion de equipos                 =
 	echo = s) Salir del menu volver a anterior.          =
 	echo =================================================
-		set /p var=Seleccione una opcion [1-10]: 
+		set /p var=Seleccione una opcion [1-7, 10, s]: 
 		if "%var%"=="1" call "taskmgr" & goto admintareas
 		if "%var%"=="2" call "calc" & goto admintareas
 		if "%var%"=="3" call "osk" & goto admintareas
@@ -478,10 +482,12 @@ REM )
 		if "%var%"=="5" start ms-settings:windowsupdate & goto admintareas
 		if "%var%"=="6" call "explorer" & goto admintareas
 		if "%var%"=="7" call "SnippingTool" & goto admintareas
-		if "%var%"=="8" goto descagar_archivos
-		if "%var%"=="9" goto descagar_archivos_lazamiento
+		REM Opciones 8 y 9 no existen en el menú
 		if "%var%"=="10" call compmgmt & goto admintareas
 		if "%var%"=="s" goto menu
+
+		REM Si llegó aquí, opción es inválida
+		goto errorAdmintareas
 		
 
 	:: Error de comandos
@@ -492,94 +498,9 @@ REM )
 	echo %camarillo%=        OPCION SELECCIONADA NO VALIDA!          =
 	echo.
 	echo %camarillo%==================================================
-	timeout /T 5 >nul
+	timeout /T 3 >nul
 	%fblanco%
 	goto admintareas
-
-REM :descagar_archivos
-REM cd C:\Juanelbuenocopiadelosarcivos\programas
-REM :: si exite se pone la aplicacion
-REM IF EXIST C:\Juanelbuenocopiadelosarcivos\programas\wget.exe goto descagar_lazamiento 
-REM :: si no exite se descarga
-REM IF NOT EXIST C:\Juanelbuenocopiadelosarcivos\programas\wget.exe wget https://eternallybored.org/misc/wget/1.20.3/64/wget.exe & goto descagar_lazamiento
-
-:descagar_archivos
-set /p descargar=Que archivo quieres descagar:
-cd %programas%
-%rutaw% "%descargar%" --no-check-certificate
-pause 
-title %titulo% 
-cls 
-goto admintareas
-
-:descagar_archivos_lazamiento
-cd %programas%
-set /p descagar1=Que archivo quieres descagar:
-set /p nombre2=Nombre del achivo: 
-powershell -command iwr '%descagar1%' -OutFile '%nombre2%' & explorer %programas% & goto admintareas	
-
-REM :Combertidor_de_yt
-REM cls
-	REM echo ================================================= 
-	REM echo =                     Menu                      =
-	REM echo =================================================
-	REM echo = 1)  Descargar yt                              =
-	REM echo = 2)  Convertir a mp3 (Fase de pruebas)         =
-	REM echo = 3)  Salir al menu                             =
-	REM echo ================================================= 
-		REM set /p var=Seleccione una opcion [1-3]: 
-		REM if "%var%"=="1" goto Descargaryt
-		REM if "%var%"=="2" goto mp3_combertidor
-		REM if "%var%"=="3" goto menu
-		
-REM :error
-REM cls
-REM echo %camarillo%==================================================
-REM echo.
-REM echo %camarillo%*        OPCION SELECCIONADA NO VALIDA!          *
-REM echo.
-REM echo %camarillo%==================================================
-REM timeout /T 5 >nul
-REM goto Combertidor_de_yt
-
-REM :Descargaryt
-REM IF EXIST %programas%\youtube-dl.exe (
-REM goto descagar_yt_programa
-REM ) else (
-REM cd %programas%
-REM powershell -command iwr 'https://youtube-dl.org/downloads/latest/youtube-dl.exe' -OutFile 'youtube-dl.exe'
-REM title %Titulo% 
-REM goto descagar_yt_programa
-REM )
-
-REM :descagar_yt_programa
-REM cd %programas%
-REM set /p enlace=Enlace del yt y de todo:
-REM @echo on
-REM youtube-dl.exe %enlace%
-REM @echo off
-REM pause
-REM goto Combertidor_de_yt
-
-REM :mp3_combertidor
-REM cd %programas%
-REM IF EXIST %programas%\ffmpeg.exe (
-REM goto mp3_combertidor_haciendo
-REM ) else (
-REM %rutaw% https://github.com/JuanElBueno/Command-Cmd/releases/download/publish/ffmpeg.exe
-REM title %Titulo% 
-REM goto mp3_combertidor_haciendo
-REM )
-REM :mp3_combertidor_haciendo
-REM cd %programas%
-REM set /p ORIGEN=Origen del achivo:
-REM set /p DESTINO=Destino del achivo:
-REM @echo on
-REM ffmpeg.exe -i %ORIGEN% %DESTINO%
-REM @echo off
-REM pause
-REM goto Combertidor_de_yt
-
 
 :: menu2 de programas de descagar
 :menu2
@@ -651,13 +572,13 @@ REM goto m3
 	echo = 3) Programas Test de velocidad               =
 	echo = 4) Programas Autoruns64                       =
 	echo = 5) Programas Task Manager                     =
-	echo = 6) Programas Administrador de archivo         =
+	echo = 6) Administrador de archivos                   =
 	echo = 7) Programas Buscador achivos                 =
 	echo = 8) Programas Descargar_Achivos                =
 	echo = 9) Salir del menu volver a anterior           =
 	echo = o) Continuacion del programa                  =	
 	echo =================================================
-		set /p var=Seleccione una opcion [1-8]: 
+		set /p var=Seleccione una opcion [1-9, o]: 
 		:: programas de equipo de wifi
 		if "%var%"=="1" goto programas
 		if "%var%"=="2" goto programas1
@@ -669,17 +590,19 @@ REM goto m3
 		if "%var%"=="8" goto programas7
 		if "%var%"=="9" goto salir
 		if "%var%"=="o" goto menu3
-		:: if "%var%"=="15" goto prueba
+
+		REM Si llegó aquí, opción es inválida
+		goto error64
 		
 :: error de comandos
-:error
+:error64
 cls
 echo %camarillo%==================================================
 echo.
 echo %camarillo%=        OPCION SELECCIONADA NO VALIDA!          =
 echo.
 echo %camarillo%==================================================
-timeout /T 5 >nul
+timeout /T 3 >nul
 %fblanco%
 goto 64
 
@@ -864,20 +787,29 @@ goto 64
 	::echo = 8) Programas=
 	echo = 3) Salir del menu volver a anterior           =
 	echo =================================================
-		set /p var=Seleccione una opcion [1-4]: 
+		set /p var=Seleccione una opcion [1-3]: 
 		:: programas de equipo de wifi
 		if "%var%"=="1" goto Executar1
 		REM if "%var%"=="2" goto Executar2
 		if "%var%"=="2" goto Executar3
 		if "%var%"=="3" goto menu2
-		::if "%var%"=="4" goto 
-		::if "%var%"=="5" goto 
-		::if "%var%"=="6" goto 
-		::if "%var%"=="7" goto 
-		::if "%var%"=="8" goto 
-		::if "%var%"=="9" goto 
+
+		REM Si llegó aquí, opción es inválida
+		goto error3 
 		
-:: error de comandos
+:: error de comandos para menu3
+:error3
+cls
+echo %camarillo%==================================================
+echo.
+echo %camarillo%=        OPCION SELECCIONADA NO VALIDA!          =
+echo.
+echo %camarillo%==================================================
+timeout /T 3 >nul
+%fblanco%
+goto menu3
+
+:: error de comandos general
 :error
 cls
 echo %camarillo%==================================================
@@ -885,7 +817,7 @@ echo.
 echo %camarillo%*        OPCION SELECCIONADA NO VALIDA!          *
 echo.
 echo %camarillo%==================================================
-timeout /T 5 >nul
+timeout /T 3 >nul
 goto menu
 
 :Executar1
