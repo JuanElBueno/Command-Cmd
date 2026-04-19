@@ -50,12 +50,6 @@ goto sinconexioni
 set Versiontwo=%Version%
 if exist "%ruta%\Updater.bat" DEL /S /Q /F "%ruta%\Updater.bat" >nul 2>&1
 "%SystemRoot%\System32\curl.exe" -g -L -# -o "%ruta%\Updater.bat" "https://raw.githubusercontent.com/JuanElBueno/Command-Cmd/main/Update" >nul 2>&1
-if %ERRORLEVEL% neq 0 (
-	echo %crojo%[!] Error descargando actualizaciones%fblanco%
-	timeout /T 3 >nul
-	goto titulot
-)
-if not exist "%ruta%\Updater.bat" goto titulot
 call "%ruta%\Updater.bat"
 if "%Version%" gtr "%Versiontwo%" (
 	cls
@@ -68,25 +62,18 @@ if "%Version%" gtr "%Versiontwo%" (
 	echo.
 	echo %camarillo%                         Nueva version: %Version%
 	echo.
+	echo.
+	echo.
 	echo %camarillo%     [Y] Yes, Update
 	echo %camarillo%     [N] No
 	echo %fblanco%
-	"%SystemRoot%\System32\choice.exe" /c:YN /n /m "Selecciona una opcion >:"
-	if %ERRORLEVEL% equ 1 (
-		"%SystemRoot%\System32\curl.exe" -L -o "%USERPROFILE%\Desktop\Comandos.bat" "https://raw.githubusercontent.com/JuanElBueno/Command-Cmd/main/Comandos.bat" >nul 2>&1
-		if %ERRORLEVEL% equ 0 (
-			call "%USERPROFILE%\Desktop\Comandos.bat"
-			exit /b
-		) else (
-			echo %crojo%[!] Error descargando la actualizacion%fblanco%
-			timeout /T 5 >nul
-			goto titulot
-		)
-	) else (
-		goto titulot
+	"%SystemRoot%\System32\choice.exe" /c:YN /n /m "%DEL%                                >:"
+	set "choice=!errorlevel!"
+	if !choice! == 1 (
+		"%SystemRoot%\System32\curl.exe" -L -o %USERPROFILE%\Desktop\Comandos.bat "https://raw.githubusercontent.com/JuanElBueno/Command-Cmd/main/Comandos.bat" >nul 2>&1
+		call %USERPROFILE%\Desktop\Comandos.bat
+		exit /b
 	)
-) else (
-	goto titulot
 )
 
 :titulot
@@ -190,7 +177,7 @@ goto wgetinstalar
 ) else (
 echo %camarillo%[+]Estas sin conexion de internet & timeout /T 5 >nul
 goto menu
-)
+))
  
 if "%wgetvof%"=="n" (
 IF EXIST %Ruta%\wget.exe ( 
@@ -202,7 +189,7 @@ goto wgetsinad
 ) else (
 echo [+]Estas sin conexion de internet & timeout /T 5 >nul
 goto menu
-)
+))
 
 :wgetsinad
 set rutaw=%ruta%\wget.exe
@@ -242,59 +229,48 @@ goto menu
 REM 						Menu de inicio
 :menu                                                    
 echo %fblanco%
-cls
-echo ==================================================
-echo =                       MENU                     =
-echo ==================================================
-echo * 1) Eliminar archivos malos                     *
-echo * 2) IP                                          *
-echo * 3) Programas que no responden                  *
-echo * 4) Informacion del equipo                      *
-echo * 5) Comandos para ejecutar rapidamente          *
-echo * 6) Informacion del wifi                        *
-echo * 7) Explorer no funciona nada                   *
-echo * 8) Administracion                              *
-echo * 9) Salir                                       *
-if "%modo%"=="on" (
-	echo * o) Menu avanzado                              *
-	echo * r) Reiniciar                                  *
-)
-echo ==================================================
-set /p var=Seleccione una opcion: 
-
-REM Validar entrada
-if "%var%"=="" goto menuError
-if "%var%"=="1" goto deltemp
-if "%var%"=="2" goto ip
-if "%var%"=="3" goto noresponde
-if "%var%"=="4" goto informaciondelequipo
-if "%var%"=="5" goto admintareas
-if "%var%"=="6" goto informaciondelwifi
-if "%var%"=="7" goto norespondeexplore
-if "%var%"=="8" goto Administradorcmd
-if "%var%"=="9" (
 	cls
-	echo [+] Saliendo...
-	timeout /T 2 >nul
-	exit /b 0
-)
-
-REM Modo de ingenieria
-if "%modo%"=="on" (
-	if "%var%"=="o" goto menu2
-	if "%var%"=="r" goto general
-)
-
-REM Opcion no valida
-goto menuError
-
-REM Error de comandos
-:menuError
+	echo ==================================================
+	echo =                       MENU                     =
+	echo ==================================================
+	echo * 1) Eliminar achivos malos                      *
+	echo * 2) Ip                                          *
+	echo * 3) Programas que no responde                   *
+	echo * 4) Informacion del equipo                      *
+	echo * 5) Comandos para ejecutar rapidamente          *
+	echo * 6) Informacion del wifi                        *
+	echo * 7) Explore no funciona nada                    *
+	echo * 8) Administracion                              *
+	echo * 9) Salir                                       *
+	echo ==================================================
+		set /p var=Seleccione una opcion [1-9]: 
+		if "%var%"=="1" goto deltemp
+		if "%var%"=="2" goto ip
+		if "%var%"=="3" goto noresponde
+		if "%var%"=="4" goto informaciondelequipo
+		if "%var%"=="5" goto admintareas
+		if "%var%"=="6" goto informaciondelwifi
+		if "%var%"=="7" goto norespondeexplore
+		if "%var%"=="8" goto Administradorcmd
+		if "%var%"=="9" echo [+] Salendo..." & timeout /T 2 >nul & Exit 
+		REM modo de ingeneria
+		if "%modo%"=="on" (
+		if "%var%"=="o" goto menu2
+		if "%var%"=="r" goto general
+		REM if "%var%"=="y" goto Combertidor_de_yt
+		REM if "%var%"=="d" goto Istalador_de_paquetes
+		) else (
+		echo [+] No disponible modo Administracion de que a hecho la aplicacion %Titulo1%...
+		timeout /T 6 >nul
+		goto menu 
+		)
+		
+:: Error de comandos
+:error
 cls
 echo %camarillo%==================================================
 echo.
 echo %camarillo%=        OPCION SELECCIONADA NO VALIDA!          =
-echo %camarillo%=        Por favor selecciona una opcion valida   =
 echo.
 echo %camarillo%==================================================
 timeout /T 5 >nul
@@ -308,220 +284,109 @@ systeminfo > "Informacion Del Equipo.txt"
 goto menu
 
 :informaciondelwifi
-cls
-mode con: cols=70 lines=20
-echo ===============================================
-echo           INFORMACION DEL WIFI
-echo ===============================================
-echo.
-echo [*] Redes WiFi disponibles:
-echo ===============================================
+:: nombre de wifi y la contraseña
+mode con: cols=65 lines=15
+echo ===============
+echo Nombre del wifi
+echo ===============
 netsh wlan show profile
-echo.
-echo ===============================================
-set /p nombredewifi=Nombre de la red WiFi: 
-
-if "%nombredewifi%"=="" (
-	echo %crojo%[!] Error: Debe ingresa un nombre de WiFi%fblanco%
-	timeout /T 3 >nul
-	goto informaciondelwifi
-)
-
-echo.
-echo [*] Detalles de: %nombredewifi%
-echo ===============================================
-netsh wlan show profile name="%nombredewifi%" key=clear >nul 2>&1
-if %ERRORLEVEL% neq 0 (
-	echo %crojo%[!] Error: La red WiFi "%nombredewifi%" no existe o no se pudo acceder%fblanco%
-	timeout /T 5 >nul
-	goto informaciondelwifi
-)
-netsh wlan show profile name="%nombredewifi%" key=clear
-echo.
+set /p nombredewifi=Nombre del wifi:
+netsh wlan show profile name=%nombredewifi% key=clear 
 pause
-mode con: cols=52 lines=18
+mode con: cols=50 lines=18  
 goto menu
 
 :: Achivos borrados tempoales
 :deltemp
 cls
-mode con: cols=65 lines=18
-echo %camarillo%=================================================
-echo.
-echo  ADVERTENCIA: Se eliminaran archivos temporales
-echo.
-echo %crojo%=================================================
-echo %fblanco%
-echo [*] Esta accion no puede deshacerse
-echo.
-set /p confirmar=Deseas continuar (s/n): 
-
-if /i NOT "%confirmar%"=="s" (
-	echo [+] Operacion cancelada
-	timeout /T 2 >nul
-	goto menu
-)
-
-cls
-echo [*] Eliminando archivos temporales...
-echo [*] Por favor espera...
-echo.
-
-REM Eliminar archivos de temp del usuario
-echo [+] Limpiando carpeta Temp del usuario...
-cd /d "%temp%" >nul 2>&1
-if %ERRORLEVEL% neq 0 (
-	echo %crojo%[!] Error: No se pudo acceder a la carpeta Temp%fblanco%
-	timeout /T 3 >nul
-	goto menu
-)
-
-REM Usar PowerShell para forzar eliminacion
-powershell -Command "Get-ChildItem -Path $env:TEMP -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue" >nul 2>&1
-
-REM Eliminar carpeta AppData\Local\Temp si no esta en uso
-echo [+] Limpiando carpeta AppData...
-powershell -Command "Get-ChildItem -Path $env:APPDATA\..\..\Local\Temp -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue" >nul 2>&1
-
-if %ERRORLEVEL% equ 0 (
-	echo %cverde%[+] Archivos temporales eliminados exitosamente%fblanco%
-) else (
-	echo %camarillo%[!] Algunos archivos no pudieron eliminarse (posiblemente esten en uso)%fblanco%
-)
-
-echo.
-echo [+] Operacion completada
-timeout /T 5 >nul
-mode con: cols=52 lines=18
+cd %temp%
+@echo on
+mode con: cols=65 lines=15
+del *.* /f /S /q >> %Ruta%\achivos_borrados.txt
+rmdir /s /q "%UserProfile%\AppData\Local\Temp" >> %Ruta%\achivos_borrados.txt
+@echo off
+timeout /T 10
+mode con: cols=50 lines=18
 cls
 goto menu
 
 ::powershell -command iwr 'https://www.sordum.org/files/download/power-run/PowerRun.zip' -OutFile 'PowerRun.zip'
 
 :Administradorcmd
-cls
-echo.
-echo %camarillo%=================================================
-echo  Ejecutando en modo Administrador
-echo %camarillo%=================================================
-echo %fblanco%
+"%admin%\PowerRun_x64.exe" "%UserProfile%\Desktop\Comandos.bat" 
+echo [+] Salendo...
+timeout /T 2 >nul 
+Exit 
 
-REM Validar que PowerRun existe
-if not exist "%admin%\PowerRun_x64.exe" (
-	echo %crojo%[!] Error: PowerRun_x64.exe no encontrado%fblanco%
-	echo [*] Ubicacion esperada: %admin%\PowerRun_x64.exe
-	timeout /T 5 >nul
-	goto menu
-)
-
-echo [*] Iniciando aplicacion en modo administrador...
-timeout /T 2 >nul
-
-REM Ejecutar con privilegios elevados
-"%admin%\PowerRun_x64.exe" "%UserProfile%\Desktop\Comandos.bat" >nul 2>&1
-if %ERRORLEVEL% neq 0 (
-	echo %crojo%[!] Error al ejecutar en modo administrador%fblanco%
-	timeout /T 3 >nul
-	goto menu
-)
-
-echo %cverde%[+] Saliendo...%fblanco%
-timeout /T 2 >nul
-exit /b 0 
-
-REM Verificar conectividad - Ping continuo
+:: Ip cuando estas sin intertet
 :ip
 cls
 mode con: cols=70 lines=18
-echo %camarillo%=================================================
-echo  Verificando conectividad (Presiona Ctrl+C para salir)
-echo %camarillo%=================================================
-echo %fblanco%
-title %Titulo% - Ping en progreso (Ctrl+C para salir)
+title Ip De Google (Acuedate de N para salir)
 ping google.es -t
 cls
 mode con: cols=50 lines=18
 title %Titulo%
 goto menu
 
-REM Detener programas que no responden
+:: No responde los porgramas
 :noresponde
 cls
-echo [*] Finalizando programas que no responden...
-taskkill.exe /f /fi "status eq Not Responding" >nul 2>&1
-if %ERRORLEVEL% equ 0 (
-	echo %cverde%[+] Procesos finalizados exitosamente%fblanco%
-) else (
-	echo %camarillo%[!] No se encontraron procesos sin respuesta%fblanco%
-)
-echo.
-echo [*] Esperando 10 segundos...
-timeout /T 10 >nul
-goto menu
+taskkill.exe /f /fi "status eq Not Responding" & timeout /T 10 & goto menu
 
-REM Reiniciar Explorer.exe
+:: No Responde Explore 
 :norespondeexplore
 cls
-echo [*] Reiniciando Explorer.exe...
-echo.
-TASKKILL /F /IM explorer.exe >nul 2>&1
-if %ERRORLEVEL% equ 0 (
-	echo %cverde%[+] Explorer.exe finalizado%fblanco%
-) else (
-	echo %camarillo%[!] Explorer.exe no estaba en ejecucion%fblanco%
-)
-echo [*] Esperando 10 segundos...
-timeout /T 10 >nul
-echo [*] Iniciando Explorer.exe...
-start explorer.exe >nul 2>&1
-if %ERRORLEVEL% equ 0 (
-	echo %cverde%[+] Explorer.exe reiniciado%fblanco%
-) else (
-	echo %crojo%[!] Error al reiniciar Explorer.exe%fblanco%
-)
-timeout /T 3 >nul
+TASKKILL /F /IM explorer.exe & timeout /nobreak 10 & start explorer.exe
 goto menu
 
+REM :Istalador_de_paquetes
+REM IF EXIST %programas%\Progamas.bat ( 
+REM echo %cverde%[+]Progama Istalado Exitosamente & timeout /T 5 >nul
+REM goto menu
+REM ) else (
+REM :: si no exite se descarga
+REM cd %programas%
+REM powershell -command iwr '' -OutFile '' 
+REM goto menu
+REM )
 
 :admintareas
-cls
-echo ================================================= 
-echo =                      MENU                     =
-echo =================================================
-echo = 1) Administrador de tareas                    =
-echo = 2) Calculadora                                =
-echo = 3) Teclado en pantalla                        =
-echo = 4) Panel de control                           =
-echo = 5) Actualizar el windows                      =
-echo = 6) Explorer                                   =
-echo = 7) Recorte de pantalla                        =
-echo = 8) Descargar_Archivos_powershell              =
-echo = 9) Descargar_Archivos                         =
-echo = 10) Administracion de equipos                 =
-echo = s) Salir al menu anterior                     =
-echo =================================================
-set /p var=Seleccione una opcion [1-10,s]: 
-
-if "%var%"=="" goto adminError
-if "%var%"=="1" call "taskmgr" & goto admintareas
-if "%var%"=="2" call "calc" & goto admintareas
-if "%var%"=="3" call "osk" & goto admintareas
-if "%var%"=="4" call "control" & goto admintareas
-if "%var%"=="5" start ms-settings:windowsupdate & goto admintareas
-if "%var%"=="6" call "explorer" & goto admintareas
-if "%var%"=="7" call "SnippingTool" & goto admintareas
-if "%var%"=="8" goto descagar_archivos
-if "%var%"=="9" goto descagar_archivos_lazamiento
-if "%var%"=="10" call compmgmt & goto admintareas
-if "%var%"=="s" goto menu
-goto adminError
-
-:adminError
+	cls
+	echo ================================================= 
+	echo =                      MENU                     =
+	echo =================================================
+	echo = 1) Administrador de tareas                    =
+	echo = 2) Calculadora                                =
+	echo = 3) Teclado en pantalla                        =
+	echo = 4) Panel de control                           =
+	echo = 5) Atualizar el windows                       =
+	echo = 6) Explorer                                   =
+	echo = 7) Recorte de pantalla                        =
+	echo = 8) Descargar_Achivos_powershell               =
+	echo = 9) Descargar_Achivos                          =
+	echo = 10) Administracion de equipos                 =
+	echo = s) Salir del menu volver a anterior.          =
+	echo =================================================
+		set /p var=Seleccione una opcion [1-10]: 
+		if "%var%"=="1" call "taskmgr" & goto admintareas
+		if "%var%"=="2" call "calc" & goto admintareas
+		if "%var%"=="3" call "osk" & goto admintareas
+		if "%var%"=="4" call "control" & goto admintareas
+		if "%var%"=="5" start ms-settings:windowsupdate & goto admintareas
+		if "%var%"=="6" call "explorer" & goto admintareas
+		if "%var%"=="7" call "SnippingTool" & goto admintareas
+		if "%var%"=="8" goto descagar_archivos
+		if "%var%"=="9" goto descagar_archivos_lazamiento
+		if "%var%"=="10" call compmgmt & goto admintareas
+		if "%var%"=="s" goto menu
+		
+		
+:error
 cls
 echo %camarillo%==================================================
 echo.
 echo %camarillo%=        OPCION SELECCIONADA NO VALIDA!          =
-echo %camarillo%=        Selecciona un numero del 1 al 10         =
 echo.
 echo %camarillo%==================================================
 timeout /T 5 >nul
@@ -535,67 +400,20 @@ REM IF EXIST C:\Juanelbuenocopiadelosarcivos\programas\wget.exe goto descagar_la
 REM :: si no exite se descarga
 REM IF NOT EXIST C:\Juanelbuenocopiadelosarcivos\programas\wget.exe wget https://eternallybored.org/misc/wget/1.20.3/64/wget.exe & goto descagar_lazamiento
 
-:descargar_archivos
-echo.
-echo [*] Descargar archivo con wget
-echo ===============================================
-set /p descargar=Ingresa la URL del archivo: 
-
-if "%descargar%"=="" (
-	echo %crojo%[!] Error: Debes ingresar una URL%fblanco%
-	timeout /T 3 >nul
-	goto admintareas
-)
-
-echo [*] Descargando archivo...
+:descagar_archivos
+set /p descargar=Que archivo quieres descagar:
 cd %programas%
-%rutaw% "%descargar%" --no-check-certificate >nul 2>&1
-if %ERRORLEVEL% equ 0 (
-	echo %cverde%[+] Archivo descargado exitosamente%fblanco%
-	timeout /T 3 >nul
-) else (
-	echo %crojo%[!] Error en la descarga%fblanco%
-	timeout /T 3 >nul
-)
-title %Titulo%
-cls
+%rutaw% "%descargar%" --no-check-certificate
+pause 
+title %titulo% 
+cls 
 goto admintareas
 
-:descargar_archivos_lanzamiento
-echo.
-echo [*] Descargar archivo con PowerShell
-echo ===============================================
+:descagar_archivos_lazamiento
 cd %programas%
-set /p descagar1=Ingresa la URL del archivo: 
-
-if "%descagar1%"=="" (
-	echo %crojo%[!] Error: Debes ingresar una URL%fblanco%
-	timeout /T 3 >nul
-	goto admintareas
-)
-
-set /p nombre2=Nombre del archivo para guardar: 
-
-if "%nombre2%"=="" (
-	echo %crojo%[!] Error: Debes ingresar un nombre%fblanco%
-	timeout /T 3 >nul
-	goto admintareas
-)
-
-echo [*] Descargando archivo...
-powershell -Command "try { Invoke-WebRequest -Uri '%descagar1%' -OutFile '%nombre2%' -ErrorAction Stop; exit 0 } catch { exit 1 }" >nul 2>&1
-
-if %ERRORLEVEL% equ 0 (
-	echo %cverde%[+] Archivo descargado exitosamente%fblanco%
-	echo [*] Abriendo carpeta...
-	explorer %programas% >nul 2>&1
-	timeout /T 3 >nul
-) else (
-	echo %crojo%[!] Error en la descarga%fblanco%
-	timeout /T 3 >nul
-)
-cls
-goto admintareas	
+set /p descagar1=Que archivo quieres descagar:
+set /p nombre2=Nombre del achivo: 
+powershell -command iwr '%descagar1%' -OutFile '%nombre2%' & explorer %programas% & goto admintareas	
 
 REM :Combertidor_de_yt
 REM cls
@@ -719,43 +537,43 @@ REM title Juan El Bueno
 REM goto m3
 
 
+::64
 :64
-cls
-echo =================================================
-echo =                      MENU                     =
-echo =================================================
-echo = 1) Programas procexp64                        =
-echo = 2) Programas MegaBasterd                      =
-echo = 3) Programas Test de velocidad               =
-echo = 4) Programas Autoruns64                       =
-echo = 5) Programas Task Manager                     =
-echo = 6) Programas Administrador de archivo         =
-echo = 7) Programas Buscador achivos                 =
-echo = 8) Programas Descargar_Achivos                =
-echo = 9) Salir del menu volver a anterior           =
-echo = o) Continuacion del programa                  =
-echo =================================================
-set /p var=Seleccione una opcion: 
-
-if "%var%"=="" goto programas64Error
-if "%var%"=="1" goto programas
-if "%var%"=="2" goto programas1
-if "%var%"=="3" goto programas2
-if "%var%"=="4" goto programas3
-if "%var%"=="5" goto programas4
-if "%var%"=="6" goto programas5
-if "%var%"=="7" goto programas6
-if "%var%"=="8" goto programas7
-if "%var%"=="9" goto salir
-if "%var%"=="o" goto menu3
-goto programas64Error
-
-:programas64Error
+	cls
+	echo =================================================
+	echo =                      MENU                     =
+	echo =================================================
+	echo = 1) Programas procexp64                        =
+	echo = 2) Programas MegaBasterd                      =
+	echo = 3) Programas Test de velocidad               =
+	echo = 4) Programas Autoruns64                       =
+	echo = 5) Programas Task Manager                     =
+	echo = 6) Programas Administrador de archivo         =
+	echo = 7) Programas Buscador achivos                 =
+	echo = 8) Programas Descargar_Achivos                =
+	echo = 9) Salir del menu volver a anterior           =
+	echo = o) Continuacion del programa                  =	
+	echo =================================================
+		set /p var=Seleccione una opcion [1-8]: 
+		:: programas de equipo de wifi
+		if "%var%"=="1" goto programas
+		if "%var%"=="2" goto programas1
+		if "%var%"=="3" goto programas2
+		if "%var%"=="4" goto programas3
+		if "%var%"=="5" goto programas4
+		if "%var%"=="6" goto programas5
+		if "%var%"=="7" goto programas6
+		if "%var%"=="8" goto programas7
+		if "%var%"=="9" goto salir
+		if "%var%"=="o" goto menu3
+		:: if "%var%"=="15" goto prueba
+		
+:: error de comandos
+:error
 cls
 echo %camarillo%==================================================
 echo.
 echo %camarillo%=        OPCION SELECCIONADA NO VALIDA!          =
-echo %camarillo%=        Selecciona un numero del 1 al 8           =
 echo.
 echo %camarillo%==================================================
 timeout /T 5 >nul
@@ -929,33 +747,43 @@ goto 64
 
 :menu3
 %fblanco%
-cls
-echo =================================================
-echo =                      MENU                     =
-echo =================================================
-echo = 1) Programas Examen de seguridad de Microsoft =
-echo = 2) Programas Spotify 100%                     =
-echo = 3) Salir del menu volver a anterior           =
-echo =================================================
-set /p var=Seleccione una opcion [1-3]: 
-
-if "%var%"=="" goto menu3Error
-if "%var%"=="1" goto Executar1
-if "%var%"=="2" goto Executar3
-if "%var%"=="3" goto menu2
-goto menu3Error
-
-:menu3Error
+	cls
+	echo =================================================
+	echo =                      MENU                     =
+	echo =================================================
+	echo = 1) Programas Examen de seguridad de Microsoft =
+	REM echo = 2) Programas Optimizar el windows 100%        =
+	echo = 2) Programas Spotify 100%                     =
+	::echo = 4) Programas=
+	::echo = 5) Programas=
+	::echo = 6) Programas=
+	::echo = 7) Programas=
+	::echo = 8) Programas=
+	echo = 3) Salir del menu volver a anterior           =
+	echo =================================================
+		set /p var=Seleccione una opcion [1-4]: 
+		:: programas de equipo de wifi
+		if "%var%"=="1" goto Executar1
+		REM if "%var%"=="2" goto Executar2
+		if "%var%"=="2" goto Executar3
+		if "%var%"=="3" goto menu2
+		::if "%var%"=="4" goto 
+		::if "%var%"=="5" goto 
+		::if "%var%"=="6" goto 
+		::if "%var%"=="7" goto 
+		::if "%var%"=="8" goto 
+		::if "%var%"=="9" goto 
+		
+:: error de comandos
+:error
 cls
 echo %camarillo%==================================================
 echo.
-echo %camarillo%=        OPCION SELECCIONADA NO VALIDA!          =
-echo %camarillo%=        Selecciona un numero del 1 al 3           =
+echo %camarillo%*        OPCION SELECCIONADA NO VALIDA!          *
 echo.
 echo %camarillo%==================================================
 timeout /T 5 >nul
-%fblanco%
-goto menu3
+goto menu
 
 :Executar1
 cd %programas%
