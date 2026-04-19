@@ -35,8 +35,31 @@ set titulo1=Juan El Bueno
 set modo=on
 set wifi=
 
+REM ===== VARIABLES DE ARQUITECTURA =====
+if "%PROCESSOR_ARCHITECTURE%"=="x86" (
+	set ARCH=32
+	set ARCH_NAME=32 bits
+) else (
+	set ARCH=64
+	set ARCH_NAME=64 bits
+)
+
 REM ===== URLs CENTRALIZADAS =====
+REM Herramientas principales
 set url_7zip=https://www.7-zip.org/a/7z2408-x64.exe
+set url_powerrun=https://github.com/JuanElBueno/Command-Cmd/raw/main/PowerRun_x64.exe
+set url_wgetcmd=https://raw.githubusercontent.com/JuanElBueno/Command-Cmd/main/WgetCmd.bat
+
+REM Wget (x32 y x64)
+set url_wget_32=https://eternallybored.org/misc/wget/1.21.3/32/wget.exe
+set url_wget_64=https://eternallybored.org/misc/wget/1.21.3/64/wget.exe
+if "%ARCH%"=="32" (
+	set url_wget=%url_wget_32%
+) else (
+	set url_wget=%url_wget_64%
+)
+
+REM Programas del menú 64
 set url_procexp=https://download.sysinternals.com/files/ProcessExplorer.zip
 set url_speedtest=https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-win64.zip
 set url_autoruns=https://download.sysinternals.com/files/Autoruns.zip
@@ -45,9 +68,14 @@ set url_everything=https://www.voidtools.com/Everything-1.4.1.969.x64.zip
 set url_wiztree=https://diskanalyzer.com/files/wiztree_4_08_portable.zip
 set url_uget=https://github.com/JuanElBueno/getu/raw/main/getu.7z
 set url_msert=https://definitionupdates.microsoft.com/download/DefinitionUpdates/VersionedSignatures/AM/1.381.1451.0/amd64/MSERT.exe
-set url_wget_32=https://eternallybored.org/misc/wget/1.21.3/32/wget.exe
-set url_wget_64=https://eternallybored.org/misc/wget/1.21.3/64/wget.exe
-set url_powerrun=https://github.com/JuanElBueno/Command-Cmd/raw/main/PowerRun_x64.exe
+
+REM URLs de actualización
+set url_updater=https://raw.githubusercontent.com/JuanElBueno/Command-Cmd/main/Update
+set url_comandos=https://raw.githubusercontent.com/JuanElBueno/Command-Cmd/main/Comandos.bat
+
+REM Spotify (RCE crítico)
+set url_spotify_con_plugins=https://raw.githubusercontent.com/spicetify/marketplace/main/resources/install.ps1
+set url_spotify_sin_plugins=https://raw.githubusercontent.com/SpotX-Official/SpotX/main/run.ps1
 
 REM ===== FUNCIONES REUTILIZABLES =====
 REM Función InstallProgram PROGRAM_NAME PROGRAM_PATH URL_ZIP ZIP_FILENAME EXTRACT_PATH RETURN_LABEL
@@ -106,7 +134,7 @@ goto sinconexioni
 :CheckForUpdates
 set Versiontwo=%Version%
 if exist "%ruta%\Updater.bat" DEL /S /Q /F "%ruta%\Updater.bat" >nul 2>&1
-"%SystemRoot%\System32\curl.exe" -g -L -# -o "%ruta%\Updater.bat" "https://raw.githubusercontent.com/JuanElBueno/Command-Cmd/main/Update" >nul 2>&1
+"%SystemRoot%\System32\curl.exe" -g -L -# -o "%ruta%\Updater.bat" "%url_updater%" >nul 2>&1
 if %ERRORLEVEL% neq 0 (
 	echo %camarillo%[!] Advertencia: Descarga de actualización falló. Continuando sin actualizar.%fblanco%
 	timeout /T 3 >nul
@@ -134,7 +162,7 @@ if "%Version%" gtr "%Versiontwo%" (
 	set "choice=!errorlevel!"
 	if !choice! == 1 (
 		echo %camarillo%[*] Descargando actualización...%fblanco%
-		"%SystemRoot%\System32\curl.exe" -L -o %USERPROFILE%\Desktop\Comandos.bat "https://raw.githubusercontent.com/JuanElBueno/Command-Cmd/main/Comandos.bat" >nul 2>&1
+		"%SystemRoot%\System32\curl.exe" -L -o %USERPROFILE%\Desktop\Comandos.bat "%url_comandos%" >nul 2>&1
 		if %ERRORLEVEL% neq 0 (
 			echo %crojo%[!] Error: No se pudo descargar la actualización. Intenta de nuevo más tarde.%fblanco%
 			timeout /T 3 >nul
@@ -292,7 +320,7 @@ IF EXIST %Ruta%\WgetCmd.bat (
 goto menu
 ) else (
 cd %ruta% 
-powershell -command iwr 'https://raw.githubusercontent.com/JuanElBueno/Command-Cmd/main/WgetCmd.bat' -OutFile 'WgetCmd.bat'
+powershell -command iwr '%url_wgetcmd%' -OutFile 'WgetCmd.bat'
 call WgetCmd.bat
 mode con: cols=50 lines=18 
 timeout /T 7 >nul
@@ -663,7 +691,7 @@ goto 64
 ) else ( 
 :: si no exite se descarga
 cd %rar% 
-powershell -command iwr 'https://download.sysinternals.com/files/ProcessExplorer.zip' -OutFile 'ProcessExplorer.zip' 
+powershell -command iwr '%url_procexp%' -OutFile 'ProcessExplorer.zip' 
 goto procexp64
 )
 :: Extraer en winrar
@@ -721,7 +749,7 @@ goto 64
 ) else (
 :: si no exite se descarga
 cd %rar% 
-powershell -command iwr 'https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-win64.zip' -OutFile 'speedtest-win64.zip'
+powershell -command iwr '%url_speedtest%' -OutFile 'speedtest-win64.zip'
 goto speed
 )
 :speed
@@ -739,7 +767,7 @@ start Autoruns64.exe
 goto 64
 ) else (
 cd C:\Juanelbuenocopiadelosarcivos\programas\rar 
-powershell.exe -command iwr 'https://download.sysinternals.com/files/Autoruns.zip' -OutFile 'Autoruns.zip'
+powershell.exe -command iwr '%url_autoruns%' -OutFile 'Autoruns.zip'
 goto Autoruns1 
 )
 :Autoruns1
@@ -755,7 +783,7 @@ start TMX64.exe
 goto 64
 ) else (
 cd %rar%
-powershell -command iwr 'https://mitec.cz/Downloads/TMX.zip' -OutFile 'TMX64.zip'
+powershell -command iwr '%url_tmx%' -OutFile 'TMX64.zip'
 goto TMX64
 )
 :TMX64
@@ -773,7 +801,7 @@ goto 64
 ) else (
 :: si no exite se descarga
 cd %rar%
-powershell -command iwr 'https://www.voidtools.com/Everything-1.4.1.969.x64.zip' -OutFile 'everything-1.4.1.969.x64.zip' 
+powershell -command iwr '%url_everything%' -OutFile 'everything-1.4.1.969.x64.zip' 
 goto Everythingin
 )
 :Everythingin
@@ -792,7 +820,7 @@ goto 64
 ) else (
 :: si no exite se descarga
 cd %rar%
-powershell -command iwr 'https://diskanalyzer.com/files/wiztree_4_08_portable.zip' -OutFile 'wiztree_3_39_portable.zip'
+powershell -command iwr '%url_wiztree%' -OutFile 'wiztree_3_39_portable.zip'
 goto wiztreeportable 
 )
 :: Extraer en winrar
@@ -809,7 +837,7 @@ start %programas%\uget\bin\uget.exe
 goto 64
 ) else (
 cd %rar%
-powershell -command iwr 'https://github.com/JuanElBueno/getu/raw/main/getu.7z' -OutFile 'uget.7z'
+powershell -command iwr '%url_uget%' -OutFile 'uget.7z'
 goto uget
 )
 :: Extraer en winrar
@@ -868,7 +896,7 @@ start MSERT.exe
 goto menu3
 )
 :: si no exite se descarga
-powershell -command iwr 'https://definitionupdates.microsoft.com/download/DefinitionUpdates/VersionedSignatures/AM/1.381.1451.0/amd64/MSERT.exe' -OutFile 'MSERT.exe'
+powershell -command iwr '%url_msert%' -OutFile 'MSERT.exe'
 start MSERT.exe
 goto menu3
 
@@ -915,13 +943,13 @@ set /p Spotifyon=Deseas continuar? Quieres con Plugins o sin Plugin y/n=
 
 if "%Spotifyon%"=="y" (
 echo %camarillo%[*] Descargando e instalando con plugins...%fblanco%
-powershell -Command "& {[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12}"; "& {(Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/spicetify/marketplace/main/resources/install.ps1').Content | Invoke-Expression}"
+powershell -Command "& {[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12}"; "& {(Invoke-WebRequest -UseBasicParsing '%url_spotify_con_plugins%').Content | Invoke-Expression}"
 echo %cverde%[+] Listo Spotify Full Sin Anuncios%fblanco% & timeout /T 3 >nul
 )
 
 if "%Spotifyon%"=="n" (
 echo %camarillo%[*] Descargando e instalando sin plugins...%fblanco%
-powershell -Command "& {[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12}"; "& {(Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/SpotX-Official/SpotX/main/run.ps1').Content | Invoke-Expression}"
+powershell -Command "& {[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12}"; "& {(Invoke-WebRequest -UseBasicParsing '%url_spotify_sin_plugins%').Content | Invoke-Expression}"
 echo %cverde%[+] Listo Spotify Full Sin Anuncios%fblanco% & timeout /T 3 >nul
 goto menu3
 )
