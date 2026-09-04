@@ -6,7 +6,7 @@ REM  ACTUALIZADOR DE COMANDOS.BAT
 REM  Descarga y reemplaza Comandos.bat desde GitHub
 REM ════════════════════════════════════════════
 
-set "NuevaVersion=2.17"
+set "NuevaVersion=2.18"
 set "ComandosPath=%~dp0Comandos.bat"
 set "GitHubURL=https://raw.githubusercontent.com/JuanElBueno/Command-Cmd/main/Comandos.bat"
 
