@@ -1,1 +1,90 @@
-set Version=2.17
+@echo off
+setlocal EnableDelayedExpansion
+
+REM ════════════════════════════════════════════
+REM  ACTUALIZADOR DE COMANDOS.BAT
+REM  Descarga y reemplaza Comandos.bat desde GitHub
+REM ════════════════════════════════════════════
+
+set "NuevaVersion=2.17"
+set "ComandosPath=%~dp0Comandos.bat"
+set "GitHubURL=https://raw.githubusercontent.com/JuanElBueno/Command-Cmd/main/Comandos.bat"
+
+REM ── Caracter ESC para colores ANSI ──
+for /f "delims=" %%a in ('powershell -noprofile -command "[char]27"') do set "ESC=%%a"
+set "fROJO=%ESC%[91m"
+set "fVERDE=%ESC%[92m"
+set "fAMARILLO=%ESC%[93m"
+set "fCYAN=%ESC%[96m"
+set "fBLANCO=%ESC%[97m"
+set "RESET=%ESC%[0m"
+
+REM ── Obtener version actual de Comandos.bat ──
+set "VersionActual="
+if exist "%ComandosPath%" (
+    for /f "tokens=2 delims==" %%a in ('findstr /C:"set "Version=" "%ComandosPath%" 2^>nul') do (
+        set "VersionActual=%%~a"
+    )
+)
+set "VersionActual=!VersionActual:"=!"
+
+REM ── Si no se pudo obtener la version, salir ──
+if "!VersionActual!"=="" exit /b
+
+REM ── Comparar versiones ──
+for /f "tokens=1,2 delims=." %%a in ("%NuevaVersion%") do set /a "nv=%%a*100+%%b"
+for /f "tokens=1,2 delims=." %%a in ("!VersionActual!") do set /a "ov=%%a*100+%%b"
+
+REM ── Si no hay nueva version, salir silenciosamente ──
+if !nv! leq !ov! exit /b
+
+REM ════════════════════════════════════════════
+REM  HAY ACTUALIZACION DISPONIBLE
+REM ════════════════════════════════════════════
+cls
+echo.
+echo %fCYAN%  +================================================+%RESET%
+echo %fCYAN%  ^|                                                ^|%RESET%
+echo %fCYAN%  ^|          ACTUALIZACION ENCONTRADA             ^|%RESET%
+echo %fCYAN%  ^|                                                ^|%RESET%
+echo %fCYAN%  +================================================+%RESET%
+echo %fCYAN%  ^|                                                ^|%RESET%
+echo %fCYAN%  ^|  %fBLANCO%Tu version:    %fAMARILLO%!VersionActual!%fCYAN%                            ^|%RESET%
+echo %fCYAN%  ^|  %fBLANCO%Nueva version: %fVERDE%%NuevaVersion%%fCYAN%                            ^|%RESET%
+echo %fCYAN%  ^|                                                ^|%RESET%
+echo %fCYAN%  +================================================+%RESET%
+echo.
+set /p "respuesta=  %fAMARILLO%Actualizar? [S/N]: %RESET%"
+
+REM ── Si el usuario no quiere actualizar, salir ──
+if /I not "!respuesta!"=="S" exit /b
+
+REM ════════════════════════════════════════════
+REM  DESCARGAR NUEVA VERSION
+REM ════════════════════════════════════════════
+cls
+echo.
+echo %fCYAN%  +================================================+%RESET%
+echo %fCYAN%  ^|              DESCARGANDO ACTUALIZACION         ^|%RESET%
+echo %fCYAN%  +================================================+%RESET%
+echo.
+echo %fBLANCO%  Descargando Comandos.bat...%RESET%
+echo.
+
+"%SystemRoot%\System32\curl.exe" -L -s -o "%ComandosPath%" "%GitHubURL%" >nul 2>&1
+
+REM ── Verificar si se descargo correctamente ──
+if exist "%ComandosPath%" (
+    echo %fVERDE%  [+] Actualizacion completada!%RESET%
+    echo.
+    echo %fBLANCO%  Reiniciando...%RESET%
+    timeout /T 2 >nul
+    call "%ComandosPath%"
+) else (
+    echo %fROJO%  [-] Error al descargar la actualizacion.%RESET%
+    echo %fROJO%  [-] Intentalo de nuevo mas tarde.%RESET%
+    echo.
+    pause
+)
+
+exit /b

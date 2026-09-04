@@ -47,34 +47,9 @@ REM ═════════════════════════�
 REM  ACTUALIZACIONES
 REM ════════════════════════════════════════════
 :CheckForUpdates
-set "Versiontwo=%Version%"
 if exist "%ruta%\Updater.bat" del /S /Q /F "%ruta%\Updater.bat" >nul 2>&1
 "%SystemRoot%\System32\curl.exe" -g -L -s -o "%ruta%\Updater.bat" "https://raw.githubusercontent.com/JuanElBueno/Command-Cmd/main/Update" >nul 2>&1
 if exist "%ruta%\Updater.bat" call "%ruta%\Updater.bat"
-
-if "%Version%" gtr "%Versiontwo%" (
-    cls
-    echo.
-    echo %fCYAN%  +----------------------------------------------+%RESET%
-    echo %fCYAN%  ^|%fBLANCO%        ACTUALIZACION ENCONTRADA              %fCYAN%^|%RESET%
-    echo %fCYAN%  +----------------------------------------------+%RESET%
-    echo %fCYAN%  ^|                                              ^|%RESET%
-    echo %fCYAN%  ^|  %fBLANCO%Mi version:    %fAMARILLO%%Versiontwo%%fCYAN%                    ^|%RESET%
-    echo %fCYAN%  ^|  %fBLANCO%Nueva version: %fVERDE%%Version%%fCYAN%                    ^|%RESET%
-    echo %fCYAN%  ^|                                              ^|%RESET%
-    echo %fCYAN%  +----------------------------------------------+%RESET%
-    echo %fCYAN%  ^|  %fAMARILLO%[Y]%fBLANCO% Actualizar                            %fCYAN%^|%RESET%
-    echo %fCYAN%  ^|  %fAMARILLO%[N]%fBLANCO% Omitir                                %fCYAN%^|%RESET%
-    echo %fCYAN%  +----------------------------------------------+%RESET%
-    echo.
-    "%SystemRoot%\System32\choice.exe" /c:YN /n /m "  > Elige [Y/N]: "
-    set "eleccion=!errorlevel!"
-    if !eleccion! EQU 1 (
-        "%SystemRoot%\System32\curl.exe" -L -s -o "%USERPROFILE%\Desktop\Comandos.bat" "https://raw.githubusercontent.com/JuanElBueno/Command-Cmd/main/Comandos.bat" >nul 2>&1
-        call "%USERPROFILE%\Desktop\Comandos.bat"
-        exit /b
-    )
-)
 
 REM ════════════════════════════════════════════
 REM  TITULO DE LA VENTANA
@@ -99,12 +74,12 @@ if not exist "%rar%"       md "%rar%"
 cls
 echo.
 echo %fCYAN%  +================================================+%RESET%
-echo %fCYAN%  ^|%fBLANCO%                                                %fCYAN%^|%RESET%
-echo %fCYAN%  ^|%fBLANCO%          J U A N   E L   B U E N O            %fCYAN%^|%RESET%
-echo %fCYAN%  ^|%fBLANCO%                                                %fCYAN%^|%RESET%
+echo %fCYAN%  ^|                                                ^|%RESET%
+echo %fCYAN%  ^|          J U A N   E L   B U E N O            ^|%RESET%
+echo %fCYAN%  ^|                                                ^|%RESET%
 echo %fCYAN%  +================================================+%RESET%
-echo %fCYAN%  ^|%fAMARILLO%  Version: %Version% (%Beta%)                    %fCYAN%^|%RESET%
-echo %fCYAN%  ^|%fBLANCO%  Compatible con Windows 10 y 11                %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%Version: %Version% (%Beta%)                       %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fBLANCO%Compatible con Windows 10 y 11                 %fCYAN%^|%RESET%
 echo %fCYAN%  +================================================+%RESET%
 echo.
 timeout /T 2 >nul
@@ -113,38 +88,43 @@ REM ═════════════════════════�
 REM  VERIFICACION DE DEPENDENCIAS
 REM ════════════════════════════════════════════
 
+echo.
+echo %fCYAN%  +================================================+%RESET%
+echo %fCYAN%  ^|              DEPENDENCIAS                      ^|%RESET%
+echo %fCYAN%  +================================================+%RESET%
+
 :checkZip
 if exist "%zip%" (
-    echo %fVERDE%  [+] 7-Zip OK%RESET%
+    echo %fCYAN%  ^|  %fVERDE%[+] 7-Zip OK                            %fCYAN%^|%RESET%
 ) else if "%wifi%"=="true" (
-    echo %fAMARILLO%  [!] Instalando 7-Zip...%RESET%
+    echo %fCYAN%  ^|  %fAMARILLO%[!] Instalando 7-Zip...               %fCYAN%^|%RESET%
     call :instalarZip
-    if exist "%zip%" (echo %fVERDE%  [+] 7-Zip instalado%RESET%) else (echo %fROJO%  [-] 7-Zip no se pudo instalar%RESET%)
+    if exist "%zip%" (echo %fCYAN%  ^|  %fVERDE%[+] 7-Zip instalado                 %fCYAN%^|%RESET%) else (echo %fCYAN%  ^|  %fROJO%[-] 7-Zip fallo                    %fCYAN%^|%RESET%)
 ) else (
-    echo %fROJO%  [-] 7-Zip no encontrado%RESET%
+    echo %fCYAN%  ^|  %fROJO%[-] 7-Zip no encontrado                  %fCYAN%^|%RESET%
 )
-timeout /T 1 >nul
 
 :checkPowerRun
 if exist "%admin%\PowerRun_x64.exe" (
-    echo %fVERDE%  [+] PowerRun OK%RESET%
+    echo %fCYAN%  ^|  %fVERDE%[+] PowerRun OK                        %fCYAN%^|%RESET%
 ) else (
-    echo %fROJO%  [-] PowerRun no instalado, se instalara al usarlo%RESET%
+    echo %fCYAN%  ^|  %fAMARILLO%[!] PowerRun: se instalara al usarlo  %fCYAN%^|%RESET%
 )
-timeout /T 1 >nul
 
 :checkWget
 set "rutaw="
 if exist "C:\Windows\System32\wget.exe" (
     set "rutaw=C:\Windows\System32\wget.exe"
-    echo %fVERDE%  [+] Wget OK%RESET%
+    echo %fCYAN%  ^|  %fVERDE%[+] Wget OK                            %fCYAN%^|%RESET%
 ) else if exist "%ruta%\wget.exe" (
     set "rutaw=%ruta%\wget.exe"
-    echo %fVERDE%  [+] Wget OK%RESET%
+    echo %fCYAN%  ^|  %fVERDE%[+] Wget OK                            %fCYAN%^|%RESET%
 ) else (
-    echo %fROJO%  [-] Wget no instalado, se instalara al usarlo%RESET%
+    echo %fCYAN%  ^|  %fAMARILLO%[!] Wget: se instalara al usarlo      %fCYAN%^|%RESET%
 )
-timeout /T 1 >nul
+
+echo %fCYAN%  +================================================+%RESET%
+timeout /T 2 >nul
 goto menu
 
 REM ════════════════════════════════════════════
@@ -154,17 +134,17 @@ REM ═════════════════════════�
 cls
 echo.
 echo %fCYAN%  +================================================+%RESET%
-echo %fCYAN%  ^|%fBLANCO%                 MENU PRINCIPAL                 %fCYAN%^|%RESET%
+echo %fCYAN%  ^|               MENU PRINCIPAL                   ^|%RESET%
 echo %fCYAN%  +================================================+%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[1]%fBLANCO%  Eliminar archivos temporales          %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[2]%fBLANCO%  IP y conectividad                     %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[3]%fBLANCO%  Cerrar programas sin respuesta        %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[4]%fBLANCO%  Informacion del equipo                %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[5]%fBLANCO%  Herramientas rapidas                  %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[6]%fBLANCO%  Informacion del WiFi                  %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[7]%fBLANCO%  Reiniciar Explorer                    %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[8]%fBLANCO%  Administracion (elevar permisos)      %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[9]%fBLANCO%  Salir                                 %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[1]%fBLANCO%   Eliminar archivos temporales           %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[2]%fBLANCO%   IP y conectividad                      %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[3]%fBLANCO%   Cerrar programas sin respuesta         %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[4]%fBLANCO%   Informacion del equipo                 %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[5]%fBLANCO%   Herramientas rapidas                   %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[6]%fBLANCO%   Informacion del WiFi                   %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[7]%fBLANCO%   Reiniciar Explorer                     %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[8]%fBLANCO%   Administracion (elevar permisos)       %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[9]%fBLANCO%   Salir                                  %fCYAN%^|%RESET%
 echo %fCYAN%  +================================================+%RESET%
 echo.
 set "var="
@@ -188,7 +168,7 @@ goto errorMenu
 cls
 echo.
 echo %fROJO%  +================================================+%RESET%
-echo %fROJO%  ^|        OPCION SELECCIONADA NO VALIDA           ^|%RESET%
+echo %fROJO%  ^|         OPCION SELECCIONADA NO VALIDA          ^|%RESET%
 echo %fROJO%  +================================================+%RESET%
 echo.
 timeout /T 3 >nul
@@ -212,7 +192,7 @@ cls
 mode con: cols=68 lines=24
 echo.
 echo %fCYAN%  +============================================================+%RESET%
-echo %fCYAN%  ^|                  INFORMACION DEL WIFI                      ^|%RESET%
+echo %fCYAN%  ^|                   INFORMACION DEL WIFI                     ^|%RESET%
 echo %fCYAN%  +============================================================+%RESET%
 echo.
 netsh wlan show profile
@@ -231,13 +211,15 @@ cls
 mode con: cols=68 lines=24
 echo.
 echo %fAMARILLO%  +============================================================+%RESET%
-echo %fAMARILLO%  ^|            LIMPIANDO ARCHIVOS TEMPORALES                   ^|%RESET%
+echo %fAMARILLO%  ^|             LIMPIANDO ARCHIVOS TEMPORALES                  ^|%RESET%
 echo %fAMARILLO%  +============================================================+%RESET%
 echo.
 echo %fBLANCO%  Eliminando temporales, espera...%RESET%
-cd "%temp%"
+set "oldcd=%cd%"
+cd /d "%temp%"
 del *.* /f /S /q >> "%ruta%\archivos_borrados.txt" 2>nul
-rmdir /s /q "%UserProfile%\AppData\Local\Temp" >> "%ruta%\archivos_borrados.txt" 2>nul
+for /d %%d in (*) do rmdir /s /q "%%d" 2>nul
+cd /d "%oldcd%"
 echo.
 echo %fVERDE%  [+] Limpieza completada%RESET%
 timeout /T 4 >nul
@@ -249,7 +231,7 @@ call :instalarPowerRun
 if not exist "%admin%\PowerRun_x64.exe" (
     echo %fROJO%  [-] PowerRun no disponible%RESET% & timeout /T 3 >nul & goto menu
 )
-"%admin%\PowerRun_x64.exe" "%UserProfile%\Desktop\Comandos.bat"
+"%admin%\PowerRun_x64.exe" "%~dp0Comandos.bat"
 echo.
 echo %fAMARILLO%  Saliendo...%RESET%
 timeout /T 2 >nul
@@ -261,8 +243,8 @@ mode con: cols=72 lines=24
 title Ping Google (Ctrl+C para salir)
 echo.
 echo %fCYAN%  +==============================================================+%RESET%
-echo %fCYAN%  ^|               PING CONTINUO A GOOGLE.ES                      ^|%RESET%
-echo %fCYAN%  ^|              Presiona Ctrl+C para detener                    ^|%RESET%
+echo %fCYAN%  ^|                PING CONTINUO A GOOGLE.ES                    ^|%RESET%
+echo %fCYAN%  ^|               Presiona Ctrl+C para detener                  ^|%RESET%
 echo %fCYAN%  +==============================================================+%RESET%
 echo.
 ping google.es -t
@@ -299,17 +281,17 @@ REM ═════════════════════════�
 cls
 echo.
 echo %fCYAN%  +================================================+%RESET%
-echo %fCYAN%  ^|%fBLANCO%            HERRAMIENTAS RAPIDAS                %fCYAN%^|%RESET%
+echo %fCYAN%  ^|             HERRAMIENTAS RAPIDAS               ^|%RESET%
 echo %fCYAN%  +================================================+%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[1]%fBLANCO%   Administrador de tareas            %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[2]%fBLANCO%   Calculadora                        %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[3]%fBLANCO%   Teclado en pantalla                %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[4]%fBLANCO%   Panel de control                   %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[5]%fBLANCO%   Windows Update                     %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[6]%fBLANCO%   Explorador de archivos             %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[7]%fBLANCO%   Herramienta de recorte             %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[8]%fBLANCO%   Administracion de equipos          %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[s]%fBLANCO%   Volver al menu anterior            %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[1]%fBLANCO%    Administrador de tareas             %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[2]%fBLANCO%    Calculadora                         %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[3]%fBLANCO%    Teclado en pantalla                 %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[4]%fBLANCO%    Panel de control                    %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[5]%fBLANCO%    Windows Update                      %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[6]%fBLANCO%    Explorador de archivos              %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[7]%fBLANCO%    Herramienta de recorte              %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[8]%fBLANCO%    Administracion de equipos           %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[s]%fBLANCO%    Volver al menu anterior             %fCYAN%^|%RESET%
 echo %fCYAN%  +================================================+%RESET%
 echo.
 set "var="
@@ -329,7 +311,7 @@ goto errorTareas
 cls
 echo.
 echo %fROJO%  +================================================+%RESET%
-echo %fROJO%  ^|        OPCION SELECCIONADA NO VALIDA           ^|%RESET%
+echo %fROJO%  ^|         OPCION SELECCIONADA NO VALIDA          ^|%RESET%
 echo %fROJO%  +================================================+%RESET%
 echo.
 timeout /T 3 >nul
@@ -352,18 +334,18 @@ goto 64
 cls
 echo.
 echo %fCYAN%  +================================================+%RESET%
-echo %fCYAN%  ^|%fBLANCO%            PROGRAMAS AVANZADOS                %fCYAN%^|%RESET%
+echo %fCYAN%  ^|             PROGRAMAS AVANZADOS                ^|%RESET%
 echo %fCYAN%  +================================================+%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[1]%fBLANCO%  Process Explorer                   %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[2]%fBLANCO%  MegaBasterd                        %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[3]%fBLANCO%  Speedtest CLI                      %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[4]%fBLANCO%  Autoruns                           %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[5]%fBLANCO%  Task Manager Extendido             %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[6]%fBLANCO%  Analizador de disco (WizTree)      %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[7]%fBLANCO%  Buscador de archivos (Everything)  %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[8]%fBLANCO%  Gestor de descargas (uGet)         %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[9]%fBLANCO%  Volver al menu anterior            %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[o]%fBLANCO%  Continuacion del programa          %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[1]%fBLANCO%   Process Explorer                    %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[2]%fBLANCO%   MegaBasterd                         %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[3]%fBLANCO%   Speedtest CLI                       %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[4]%fBLANCO%   Autoruns                            %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[5]%fBLANCO%   Task Manager Extendido              %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[6]%fBLANCO%   Analizador de disco (WizTree)       %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[7]%fBLANCO%   Buscador de archivos (Everything)   %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[8]%fBLANCO%   Gestor de descargas (uGet)          %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[9]%fBLANCO%   Volver al menu anterior             %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[o]%fBLANCO%   Continuacion del programa           %fCYAN%^|%RESET%
 echo %fCYAN%  +================================================+%RESET%
 echo.
 set "var="
@@ -384,7 +366,7 @@ goto error64
 cls
 echo.
 echo %fROJO%  +================================================+%RESET%
-echo %fROJO%  ^|        OPCION SELECCIONADA NO VALIDA           ^|%RESET%
+echo %fROJO%  ^|         OPCION SELECCIONADA NO VALIDA          ^|%RESET%
 echo %fROJO%  +================================================+%RESET%
 echo.
 timeout /T 3 >nul
@@ -524,8 +506,6 @@ cd "%admin%"
 powershell -command "iwr 'https://github.com/JuanElBueno/Command-Cmd/raw/main/PowerRun_x64.exe' -OutFile 'PowerRun_x64.exe'" >nul 2>&1
 goto :EOF
 
-goto menu
-
 REM ════════════════════════════════════════════
 REM  SUBMENU: PROGRAMAS ESPECIALES
 REM ════════════════════════════════════════════
@@ -533,11 +513,11 @@ REM ═════════════════════════�
 cls
 echo.
 echo %fCYAN%  +================================================+%RESET%
-echo %fCYAN%  ^|%fBLANCO%            PROGRAMAS ESPECIALES               %fCYAN%^|%RESET%
+echo %fCYAN%  ^|              PROGRAMAS ESPECIALES              ^|%RESET%
 echo %fCYAN%  +================================================+%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[1]%fBLANCO%  Examen de seguridad (MSERT)         %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[2]%fBLANCO%  Spotify sin anuncios                %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[3]%fBLANCO%  Volver al menu anterior             %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[1]%fBLANCO%   Examen de seguridad (MSERT)          %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[2]%fBLANCO%   Spotify sin anuncios                 %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[3]%fBLANCO%   Volver al menu anterior              %fCYAN%^|%RESET%
 echo %fCYAN%  +================================================+%RESET%
 echo.
 set "var="
@@ -551,7 +531,7 @@ goto errorMenu3
 cls
 echo.
 echo %fROJO%  +================================================+%RESET%
-echo %fROJO%  ^|        OPCION SELECCIONADA NO VALIDA           ^|%RESET%
+echo %fROJO%  ^|         OPCION SELECCIONADA NO VALIDA          ^|%RESET%
 echo %fROJO%  +================================================+%RESET%
 echo.
 timeout /T 3 >nul
@@ -572,10 +552,10 @@ goto menu3
 cls
 echo.
 echo %fCYAN%  +================================================+%RESET%
-echo %fCYAN%  ^|%fBLANCO%             SPOTIFY SIN ANUNCIOS              %fCYAN%^|%RESET%
+echo %fCYAN%  ^|              SPOTIFY SIN ANUNCIOS              ^|%RESET%
 echo %fCYAN%  +================================================+%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[y]%fBLANCO%  Con plugins  (Spicetify)            %fCYAN%^|%RESET%
-echo %fCYAN%  ^|  %fAMARILLO%[n]%fBLANCO%  Sin plugins  (SpotX)                %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[y]%fBLANCO%   Con plugins  (Spicetify)             %fCYAN%^|%RESET%
+echo %fCYAN%  ^|  %fAMARILLO%[n]%fBLANCO%   Sin plugins  (SpotX)                 %fCYAN%^|%RESET%
 echo %fCYAN%  +================================================+%RESET%
 echo.
 set "Spotifyon="
@@ -608,11 +588,11 @@ mode con: cols=52 lines=24
 cls
 echo.
 echo %fROJO%  +================================================+%RESET%
-echo %fROJO%  ^|           SIN CONEXION A INTERNET              ^|%RESET%
+echo %fROJO%  ^|            SIN CONEXION A INTERNET             ^|%RESET%
 echo %fROJO%  +================================================+%RESET%
 echo %fROJO%  ^|                                                ^|%RESET%
-echo %fROJO%  ^|  No hay conexion a internet.                   ^|%RESET%
-echo %fROJO%  ^|  Algunas funciones no estaran disponibles.     ^|%RESET%
+echo %fROJO%  ^|  No hay conexion a internet.                  ^|%RESET%
+echo %fROJO%  ^|  Algunas funciones no estaran disponibles.    ^|%RESET%
 echo %fROJO%  ^|                                                ^|%RESET%
 echo %fROJO%  +================================================+%RESET%
 echo.
