@@ -22,14 +22,10 @@ set "RESET=%ESC%[0m"
 REM ── Obtener version actual de Comandos.bat ──
 set "VersionActual="
 if exist "%ComandosPath%" (
-    for /f "usebackq tokens=1,2 delims==" %%a in ("%ComandosPath%") do (
-        echo %%a | findstr /C:"Version" >nul 2>&1 && (
-            if not "%%b"=="" set "VersionActual=%%b"
-        )
+    for /f "delims=" %%a in ('powershell -noprofile -command "Get-Content '%ComandosPath%' | Where-Object { $_ -match 'set \"Version=' } | ForEach-Object { $_ -replace '.*Version=([0-9.]+).*','$1' }"') do (
+        set "VersionActual=%%a"
     )
 )
-set "VersionActual=!VersionActual:"=!"
-set "VersionActual=!VersionActual: =!"
 
 REM ── Si no se pudo obtener la version, salir ──
 if "!VersionActual!"=="" exit /b
@@ -80,9 +76,9 @@ REM ── Verificar si se descargo correctamente ──
 if exist "%ComandosPath%" (
     echo %fVERDE%  [+] Actualizacion completada!%RESET%
     echo.
-    echo %fBLANCO%  Reiniciando...%RESET%
-    timeout /T 2 >nul
-    call "%ComandosPath%"
+    echo %fBLANCO%  Vuelve a ejecutar Comandos.bat para usar la nueva version.%RESET%
+    echo.
+    pause
 ) else (
     echo %fROJO%  [-] Error al descargar la actualizacion.%RESET%
     echo %fROJO%  [-] Intentalo de nuevo mas tarde.%RESET%

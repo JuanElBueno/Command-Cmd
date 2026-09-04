@@ -37,11 +37,11 @@ ping -n 1 -w 2000 juanelbueno.github.io >nul 2>&1
 
 if %ERRORLEVEL% EQU 0 (
     set "wifi=true"
-    goto CheckForUpdates
 ) else (
     set "wifi=false"
-    goto sinconexion
 )
+
+if "%wifi%"=="false" goto sinconexion
 
 REM ════════════════════════════════════════════
 REM  ACTUALIZACIONES
