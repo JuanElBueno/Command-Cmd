@@ -18,7 +18,7 @@ set "RESET=%ESC%[0m"
 
 REM ── Variables globales ──
 set "Beta=Alfa"
-set "Version=2.17"
+set "Version=2.18"
 set "ruta=C:\Juanelbuenocopiadelosarcivos"
 set "programas=%ruta%\programas"
 set "admin=%ruta%\admin"

@@ -22,11 +22,14 @@ set "RESET=%ESC%[0m"
 REM ── Obtener version actual de Comandos.bat ──
 set "VersionActual="
 if exist "%ComandosPath%" (
-    for /f "tokens=2 delims==" %%a in ('findstr /C:"set "Version=" "%ComandosPath%" 2^>nul') do (
-        set "VersionActual=%%~a"
+    for /f "usebackq tokens=1,2 delims==" %%a in ("%ComandosPath%") do (
+        echo %%a | findstr /C:"Version" >nul 2>&1 && (
+            if not "%%b"=="" set "VersionActual=%%b"
+        )
     )
 )
 set "VersionActual=!VersionActual:"=!"
+set "VersionActual=!VersionActual: =!"
 
 REM ── Si no se pudo obtener la version, salir ──
 if "!VersionActual!"=="" exit /b
